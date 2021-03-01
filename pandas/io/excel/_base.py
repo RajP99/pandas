@@ -361,6 +361,9 @@ def read_excel(
     convert_float=True,
     mangle_dupe_cols=True,
     storage_options: StorageOptions = None,
+    skip_blank_lines=True,
+
+
 ):
 
     should_close = False
@@ -398,6 +401,7 @@ def read_excel(
             skipfooter=skipfooter,
             convert_float=convert_float,
             mangle_dupe_cols=mangle_dupe_cols,
+            skip_blank_lines=skip_blank_lines,
         )
     finally:
         # make sure to close opened file handles
@@ -494,6 +498,7 @@ class BaseExcelReader(metaclass=abc.ABCMeta):
         skipfooter=0,
         convert_float=True,
         mangle_dupe_cols=True,
+        skip_blank_lines=True,
         **kwds,
     ):
 
@@ -605,6 +610,7 @@ class BaseExcelReader(metaclass=abc.ABCMeta):
                     skipfooter=skipfooter,
                     usecols=usecols,
                     mangle_dupe_cols=mangle_dupe_cols,
+                    skip_blank_lines=skip_blank_lines,
                     **kwds,
                 )
 
@@ -1173,6 +1179,7 @@ class ExcelFile:
         skipfooter=0,
         convert_float=True,
         mangle_dupe_cols=True,
+        skip_blank_lines=True,
         **kwds,
     ):
         """
@@ -1206,6 +1213,7 @@ class ExcelFile:
             skipfooter=skipfooter,
             convert_float=convert_float,
             mangle_dupe_cols=mangle_dupe_cols,
+            skip_blank_lines=skip_blank_lines,
             **kwds,
         )
 
