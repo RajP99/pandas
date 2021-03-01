@@ -66,16 +66,20 @@ from pandas.io.parsers import TextParser
 _read_excel_doc = (
     """
 Read an Excel file into a pandas DataFrame.
+
 Supports `xls`, `xlsx`, `xlsm`, `xlsb`, `odf`, `ods` and `odt` file extensions
 read from a local filesystem or URL. Supports an option to read
 a single sheet or a list of sheets.
+
 Parameters
 ----------
 io : str, bytes, ExcelFile, xlrd.Book, path object, or file-like object
     Any valid string path is acceptable. The string could be a URL. Valid
     URL schemes include http, ftp, s3, and file. For file URLs, a host is
     expected. A local file could be: ``file://localhost/path/to/table.xlsx``.
+
     If you want to pass in a path object, pandas accepts any ``os.PathLike``.
+
     By file-like object, we refer to objects with a ``read()`` method,
     such as a file handle (e.g. via builtin ``open`` function)
     or ``StringIO``.
@@ -83,13 +87,16 @@ sheet_name : str, int, list, or None, default 0
     Strings are used for sheet names. Integers are used in zero-indexed
     sheet positions. Lists of strings/integers are used to request
     multiple sheets. Specify None to get all sheets.
+
     Available cases:
+
     * Defaults to ``0``: 1st sheet as a `DataFrame`
     * ``1``: 2nd sheet as a `DataFrame`
     * ``"Sheet1"``: Load sheet with name "Sheet1"
     * ``[0, 1, "Sheet5"]``: Load first, second and sheet named "Sheet5"
       as a dict of `DataFrame`
     * None: All sheets.
+
 header : int, list of int, default 0
     Row (0-indexed) to use for the column labels of the parsed
     DataFrame. If a list of integers is passed those row positions will
@@ -110,11 +117,16 @@ usecols : int, str, list-like, or callable default None
       both sides.
     * If list of int, then indicates list of column numbers to be parsed.
     * If list of string, then indicates list of column names to be parsed.
+
       .. versionadded:: 0.24.0
+
     * If callable, then evaluate each column name against it and parse the
       column if the callable returns ``True``.
+
     Returns a subset of the columns according to behavior above.
+
       .. versionadded:: 0.24.0
+
 squeeze : bool, default False
     If the parsed data only contains one column then return a Series.
 dtype : Type name or dict of column -> type, default None
@@ -126,24 +138,30 @@ engine : str, default None
     If io is not a buffer or path, this must be set to identify io.
     Supported engines: "xlrd", "openpyxl", "odf", "pyxlsb".
     Engine compatibility :
+
     - "xlrd" supports old-style Excel files (.xls).
     - "openpyxl" supports newer Excel file formats.
     - "odf" supports OpenDocument file formats (.odf, .ods, .odt).
     - "pyxlsb" supports Binary Excel files.
+
     .. versionchanged:: 1.2.0
         The engine `xlrd <https://xlrd.readthedocs.io/en/latest/>`_
         now only supports old-style ``.xls`` files.
         When ``engine=None``, the following logic will be
         used to determine the engine:
+
        - If ``path_or_buffer`` is an OpenDocument format (.odf, .ods, .odt),
          then `odf <https://pypi.org/project/odfpy/>`_ will be used.
        - Otherwise if ``path_or_buffer`` is an xls format,
          ``xlrd`` will be used.
        - Otherwise if ``path_or_buffer`` is in xlsb format,
          ``pyxlsb`` will be used.
+
          .. versionadded:: 1.3.0
        - Otherwise ``openpyxl`` will be used.
+
          .. versionchanged:: 1.3.0
+
 converters : dict, default None
     Dict of functions for converting values in certain columns. Keys can
     either be integers or column labels, values are functions that take one
@@ -170,6 +188,7 @@ na_values : scalar, str, list-like, or dict, default None
 keep_default_na : bool, default True
     Whether or not to include the default NaN values when parsing the data.
     Depending on whether `na_values` is passed in, the behavior is as follows:
+
     * If `keep_default_na` is True, and `na_values` are specified, `na_values`
       is appended to the default NaN values used for parsing.
     * If `keep_default_na` is True, and `na_values` are not specified, only
@@ -178,6 +197,7 @@ keep_default_na : bool, default True
       the NaN values specified `na_values` are used for parsing.
     * If `keep_default_na` is False, and `na_values` are not specified, no
       strings will be parsed as NaN.
+
     Note that if `na_filter` is passed in as False, the `keep_default_na` and
     `na_values` parameters will be ignored.
 na_filter : bool, default True
@@ -188,6 +208,7 @@ verbose : bool, default False
     Indicate number of NA values placed in non-numeric columns.
 parse_dates : bool, list-like, or dict, default False
     The behavior is as follows:
+
     * bool. If True -> try parsing the index.
     * list of int or names. e.g. If [1, 2, 3] -> try parsing columns 1, 2, 3
       each as a separate date column.
@@ -195,10 +216,12 @@ parse_dates : bool, list-like, or dict, default False
       a single date column.
     * dict, e.g. {'foo' : [1, 3]} -> parse columns 1, 3 as date and call
       result 'foo'
+
     If a column or index contains an unparsable date, the entire column or
     index will be returned unaltered as an object data type. If you don`t want to
     parse some cells as date just change their type in Excel to "Text".
     For non-standard datetime parsing, use ``pd.to_datetime`` after ``pd.read_excel``.
+
     Note: A fast-path exists for iso8601-formatted dates.
 date_parser : function, optional
     Function to use for converting a sequence of string columns to an array of
@@ -236,56 +259,70 @@ storage_options : dict, optional
     will be raised if providing this argument with a local path or
     a file-like buffer. See the fsspec and backend storage implementation
     docs for the set of allowed keys and values.
+
     .. versionadded:: 1.2.0
+
 Returns
 -------
 DataFrame or dict of DataFrames
     DataFrame from the passed in Excel file. See notes in sheet_name
     argument for more information on when a dict of DataFrames is returned.
+
 See Also
 --------
 DataFrame.to_excel : Write DataFrame to an Excel file.
 DataFrame.to_csv : Write DataFrame to a comma-separated values (csv) file.
 read_csv : Read a comma-separated values (csv) file into DataFrame.
 read_fwf : Read a table of fixed-width formatted lines into DataFrame.
+
 Examples
 --------
 The file can be read using the file name as string or an open file object:
+
 >>> pd.read_excel('tmp.xlsx', index_col=0)  # doctest: +SKIP
        Name  Value
 0   string1      1
 1   string2      2
 2  #Comment      3
+
 >>> pd.read_excel(open('tmp.xlsx', 'rb'),
 ...               sheet_name='Sheet3')  # doctest: +SKIP
    Unnamed: 0      Name  Value
 0           0   string1      1
 1           1   string2      2
 2           2  #Comment      3
+
 Index and header can be specified via the `index_col` and `header` arguments
+
 >>> pd.read_excel('tmp.xlsx', index_col=None, header=None)  # doctest: +SKIP
      0         1      2
 0  NaN      Name  Value
 1  0.0   string1      1
 2  1.0   string2      2
 3  2.0  #Comment      3
+
 Column types are inferred but can be explicitly specified
+
 >>> pd.read_excel('tmp.xlsx', index_col=0,
 ...               dtype={'Name': str, 'Value': float})  # doctest: +SKIP
        Name  Value
 0   string1    1.0
 1   string2    2.0
 2  #Comment    3.0
+
 True, False, and NA values, and thousands separators have defaults,
 but can be explicitly specified, too. Supply the values you would like
 as strings or lists of strings!
+
 >>> pd.read_excel('tmp.xlsx', index_col=0,
 ...               na_values=['string1', 'string2'])  # doctest: +SKIP
        Name  Value
 0       NaN      1
 1       NaN      2
 2  #Comment      3
+
 Comment lines in the excel input file can be skipped using the `comment` kwarg
+
 >>> pd.read_excel('tmp.xlsx', index_col=0, comment='#')  # doctest: +SKIP
       Name  Value
 0  string1    1.0
@@ -324,6 +361,9 @@ def read_excel(
     convert_float=True,
     mangle_dupe_cols=True,
     storage_options: StorageOptions = None,
+    skip_blank_lines=True,
+
+
 ):
 
     should_close = False
@@ -361,6 +401,7 @@ def read_excel(
             skipfooter=skipfooter,
             convert_float=convert_float,
             mangle_dupe_cols=mangle_dupe_cols,
+            skip_blank_lines=skip_blank_lines,
         )
     finally:
         # make sure to close opened file handles
@@ -457,6 +498,7 @@ class BaseExcelReader(metaclass=abc.ABCMeta):
         skipfooter=0,
         convert_float=True,
         mangle_dupe_cols=True,
+        skip_blank_lines=True,
         **kwds,
     ):
 
@@ -568,6 +610,7 @@ class BaseExcelReader(metaclass=abc.ABCMeta):
                     skipfooter=skipfooter,
                     usecols=usecols,
                     mangle_dupe_cols=mangle_dupe_cols,
+                    skip_blank_lines=skip_blank_lines,
                     **kwds,
                 )
 
@@ -592,10 +635,13 @@ class BaseExcelReader(metaclass=abc.ABCMeta):
 class ExcelWriter(metaclass=abc.ABCMeta):
     """
     Class for writing DataFrame objects into excel sheets.
+
     Default is to use xlwt for xls, openpyxl for xlsx, odf for ods.
     See DataFrame.to_excel for typical usage.
+
     The writer should be used as a context manager. Otherwise, call `close()` to save
     and close any opened file handles.
+
     Parameters
     ----------
     path : str or typing.BinaryIO
@@ -604,10 +650,13 @@ class ExcelWriter(metaclass=abc.ABCMeta):
         Engine to use for writing. If None, defaults to
         ``io.excel.<extension>.writer``.  NOTE: can only be passed as a keyword
         argument.
+
         .. deprecated:: 1.2.0
+
             As the `xlwt <https://pypi.org/project/xlwt/>`__ package is no longer
             maintained, the ``xlwt`` engine will be removed in a future
             version of pandas.
+
     date_format : str, default None
         Format string for dates written into Excel files (e.g. 'YYYY-MM-DD').
     datetime_format : str, default None
@@ -615,46 +664,64 @@ class ExcelWriter(metaclass=abc.ABCMeta):
         (e.g. 'YYYY-MM-DD HH:MM:SS').
     mode : {'w', 'a'}, default 'w'
         File mode to use (write or append). Append does not work with fsspec URLs.
+
         .. versionadded:: 0.24.0
     storage_options : dict, optional
         Extra options that make sense for a particular storage connection, e.g.
         host, port, username, password, etc., if using a URL that will
         be parsed by ``fsspec``, e.g., starting "s3://", "gcs://".
+
         .. versionadded:: 1.2.0
+
     Attributes
     ----------
     None
+
     Methods
     -------
     None
+
     Notes
     -----
     None of the methods and properties are considered public.
+
     For compatibility with CSV writers, ExcelWriter serializes lists
     and dicts to strings before writing.
+
     Examples
     --------
     Default usage:
+
     >>> with ExcelWriter('path_to_file.xlsx') as writer:
     ...     df.to_excel(writer)
+
     To write to separate sheets in a single file:
+
     >>> with ExcelWriter('path_to_file.xlsx') as writer:
     ...     df1.to_excel(writer, sheet_name='Sheet1')
     ...     df2.to_excel(writer, sheet_name='Sheet2')
+
     You can set the date format or datetime format:
+
     >>> with ExcelWriter('path_to_file.xlsx',
     ...                   date_format='YYYY-MM-DD',
     ...                   datetime_format='YYYY-MM-DD HH:MM:SS') as writer:
     ...     df.to_excel(writer)
+
     You can also append to an existing Excel file:
+
     >>> with ExcelWriter('path_to_file.xlsx', mode='a') as writer:
     ...     df.to_excel(writer, sheet_name='Sheet3')
+
     You can store Excel file in RAM:
+
     >>> import io
     >>> buffer = io.BytesIO()
     >>> with pd.ExcelWriter(buffer) as writer:
     ...     df.to_excel(writer)
+
     You can pack Excel file into zip archive:
+
     >>> import zipfile
     >>> with zipfile.ZipFile('path_to_file.zip', 'w') as zf:
     ...     with zf.open('filename.xlsx', 'w') as buffer:
@@ -744,6 +811,7 @@ class ExcelWriter(metaclass=abc.ABCMeta):
     ):
         """
         Write given formatted cells into Excel an excel sheet
+
         Parameters
         ----------
         cells : generator
@@ -819,10 +887,12 @@ class ExcelWriter(metaclass=abc.ABCMeta):
     def _value_with_fmt(self, val):
         """
         Convert numpy types to Python types for the Excel writers.
+
         Parameters
         ----------
         val : object
             Value to be written into cells
+
         Returns
         -------
         Tuple with the first element being the converted value and the second
@@ -892,16 +962,20 @@ def inspect_excel_format(
 ) -> str:
     """
     Inspect the path or content of an excel file and get its format.
+
     Adopted from xlrd: https://github.com/python-excel/xlrd.
+
     Parameters
     ----------
     content_or_path : str or file-like object
         Path to file or content of file to inspect. May be a URL.
     {storage_options}
+
     Returns
     -------
     str
         Format of file.
+
     Raises
     ------
     ValueError
@@ -950,7 +1024,9 @@ def inspect_excel_format(
 class ExcelFile:
     """
     Class for parsing tabular excel sheets into DataFrame objects.
+
     See read_excel for more documentation.
+
     Parameters
     ----------
     path_or_buffer : str, path object (pathlib.Path or py._path.local.LocalPath),
@@ -961,28 +1037,35 @@ class ExcelFile:
         If io is not a buffer or path, this must be set to identify io.
         Supported engines: ``xlrd``, ``openpyxl``, ``odf``, ``pyxlsb``
         Engine compatibility :
+
         - ``xlrd`` supports old-style Excel files (.xls).
         - ``openpyxl`` supports newer Excel file formats.
         - ``odf`` supports OpenDocument file formats (.odf, .ods, .odt).
         - ``pyxlsb`` supports Binary Excel files.
+
         .. versionchanged:: 1.2.0
+
            The engine `xlrd <https://xlrd.readthedocs.io/en/latest/>`_
            now only supports old-style ``.xls`` files.
            When ``engine=None``, the following logic will be
            used to determine the engine:
+
            - If ``path_or_buffer`` is an OpenDocument format (.odf, .ods, .odt),
              then `odf <https://pypi.org/project/odfpy/>`_ will be used.
            - Otherwise if ``path_or_buffer`` is an xls format,
              ``xlrd`` will be used.
            - Otherwise if ``path_or_buffer`` is in xlsb format,
              `pyxlsb <https://pypi.org/project/pyxlsb/>`_ will be used.
+
            .. versionadded:: 1.3.0
            - Otherwise if `openpyxl <https://pypi.org/project/openpyxl/>`_ is installed,
              then ``openpyxl`` will be used.
            - Otherwise if ``xlrd >= 2.0`` is installed, a ``ValueError`` will be raised.
            - Otherwise ``xlrd`` will be used and a ``FutureWarning`` will be raised.
              This case will raise a ``ValueError`` in a future version of pandas.
+
            .. warning::
+
             Please do not report issues when using ``xlrd`` to read ``.xlsx`` files.
             This is not supported, switch to using ``openpyxl`` instead.
     """
@@ -1096,12 +1179,15 @@ class ExcelFile:
         skipfooter=0,
         convert_float=True,
         mangle_dupe_cols=True,
+        skip_blank_lines=True,
         **kwds,
     ):
         """
         Parse specified sheet(s) into a DataFrame.
+
         Equivalent to read_excel(ExcelFile, ...)  See the read_excel
         docstring for more info on accepted parameters.
+
         Returns
         -------
         DataFrame or dict of DataFrames
@@ -1127,6 +1213,7 @@ class ExcelFile:
             skipfooter=skipfooter,
             convert_float=convert_float,
             mangle_dupe_cols=mangle_dupe_cols,
+            skip_blank_lines=skip_blank_lines,
             **kwds,
         )
 
