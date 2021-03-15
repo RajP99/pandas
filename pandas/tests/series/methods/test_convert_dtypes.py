@@ -225,3 +225,13 @@ class TestSeriesConvertDtypes:
         # GH32287
         df = pd.DataFrame({"A": pd.array([True])})
         tm.assert_frame_equal(df, df.convert_dtypes())
+        
+class TestFrameConvertDtypes:
+    def test_convert_empty(self):
+        #Test one: create an empty dataframe and see if convert_dtypes works on it
+        df = pd.DataFrame().convert_dtypes()
+        assert df.empty
+
+if __name__ == "__main__":
+    x = TestFrameConvertDtypes()
+    x.test_convert_empty()
