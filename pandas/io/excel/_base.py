@@ -259,6 +259,9 @@ storage_options : dict, optional
     will be raised if providing this argument with a local path or
     a file-like buffer. See the fsspec and backend storage implementation
     docs for the set of allowed keys and values.
+skip_blank_lines : bool, default True
+    If True, skip over blank lines in single-column spreadsheets rather than
+    interpreting as NaN values.
 
     .. versionadded:: 1.2.0
 
@@ -361,7 +364,7 @@ def read_excel(
     convert_float=True,
     mangle_dupe_cols=True,
     storage_options: StorageOptions = None,
-    skip_blank_rows = True,
+    skip_blank_lines=True,
 ):
 
     should_close = False
@@ -399,7 +402,7 @@ def read_excel(
             skipfooter=skipfooter,
             convert_float=convert_float,
             mangle_dupe_cols=mangle_dupe_cols,
-            skip_blank_rows = skip_blank_rows,
+            skip_blank_lines=skip_blank_lines,
         )
     finally:
         # make sure to close opened file handles
@@ -496,7 +499,7 @@ class BaseExcelReader(metaclass=abc.ABCMeta):
         skipfooter=0,
         convert_float=True,
         mangle_dupe_cols=True,
-        skip_blank_rows=True,
+        skip_blank_lines=True,
         **kwds,
     ):
 
@@ -608,7 +611,7 @@ class BaseExcelReader(metaclass=abc.ABCMeta):
                     skipfooter=skipfooter,
                     usecols=usecols,
                     mangle_dupe_cols=mangle_dupe_cols,
-                    skip_blank_rows=skip_blank_rows,
+                    skip_blank_lines=skip_blank_lines,
                     **kwds,
                 )
 
@@ -1177,7 +1180,7 @@ class ExcelFile:
         skipfooter=0,
         convert_float=True,
         mangle_dupe_cols=True,
-        skip_blank_rows=True,
+        skip_blank_lines=True,
         **kwds,
     ):
         """
@@ -1211,7 +1214,7 @@ class ExcelFile:
             skipfooter=skipfooter,
             convert_float=convert_float,
             mangle_dupe_cols=mangle_dupe_cols,
-            skip_blank_rows=skip_blank_rows,
+            skip_blank_lines=skip_blank_lines,
             **kwds,
         )
 

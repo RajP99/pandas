@@ -43,6 +43,11 @@ def test_ffill_missing_arguments():
         df.groupby("b").fillna()
 
 
+def test_fill_with_string_column():
+    result = (DataFrame({"a": pd.array([None, "a"], dtype="string"), "b": [0, 0]}).groupby("b").ffill())
+    expected = DataFrame({"a": pd.array([None, "a"], dtype="string")})
+    tm.assert_frame_equal(result, expected)
+
 def test_fill_consistency():
 
     # GH9221
