@@ -230,3 +230,10 @@ class TestSeriesConvertDtypes:
         #Test one: create an empty dataframe and see if convert_dtypes works on it
         df = pd.DataFrame().convert_dtypes()
         assert df.empty
+
+        #Test two: integration test, covnert_dtypes on a non-empty dataframe
+        df = pd.DataFrame({'a': [7, 1, 5], 'b': ['3', '2', '1']}, dtype='object')
+        expected = ['Int64', 'string']
+        actual = df.convert_dtypes().dtypes
+        assert expected[0] == actual[0]
+        assert expected[1] == actual[1]
