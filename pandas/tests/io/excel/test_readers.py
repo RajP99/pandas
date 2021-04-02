@@ -1193,16 +1193,19 @@ class TestReaders:
         expected = DataFrame(['a','b','c','d','e'], columns=["Test_Column"])  # Create the dataframe to compare with
         tm.assert_frame_equal(expected, input_df)  # If the dataframes are the same nothing is returned
 
+        # Test two: check if the blank line is not ignored
+        input_df = pd.read_excel(
+            "test_file.xlsx", skip_blank_lines=False)  # Read in a dataset with a blank row
+        expected = DataFrame([None, 0, 1, 2], columns=["Numbers"])  # Create the dataframe to compare with
+        tm.assert_frame_equal(expected, input_df)  # If the dataframes are the same nothing is returned
+
+        #Test three: integration test with other modules
         input_df = pd.read_excel(
             "test_file.xlsx", nrows = 3, header=None)  # Read in a dataset with a blank row , skip_blank_lines is True by default
         expected = DataFrame(['Test_Column', 'a','b','c'])  # Create the dataframe to compare with
         tm.assert_frame_equal(expected, input_df)  # If the dataframes are the same nothing is returned
 
-        # # Test two: check if the blank line is not ignored
-        # input_df = pd.read_excel(
-        #     "test_file.xlsx", skip_blank_lines=False)  # Read in a dataset with a blank row
-        # expected = DataFrame([None, 0, 1, 2], columns=["Numbers"])  # Create the dataframe to compare with
-        # tm.assert_frame_equal(expected, input_df)  # If the dataframes are the same nothing is returned
+       
 
 class TestExcelFileRead:
     @pytest.fixture(autouse=True)
